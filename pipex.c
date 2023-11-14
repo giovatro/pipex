@@ -17,21 +17,21 @@ void    pipex(char *cmd, char **envp)
     pid_t pid;
 
     pipe(fd);
-    if (pipex(fd) == -1)
+    if (pipe(fd) == -1)
         error_func();
     pid = fork();
     if (pid < 0)
         error_func();
-    if (pid == 0)
-    {
+    if (pid == 0) 
+    { //child process
         close(fd[0]);
         dup2(fd[1], STDOUT_FILENO);
         close(fd[1]);
         execute_cmd(cmd, envp);
         exit(EXIT_FAILURE);
     }
-    else
-    {
+    else 
+    { //parent process
         waitpid(pid, NULL, WNOHANG);
         dup2(fd[0], STDIN_FILENO);
         close(fd[1]);
@@ -46,7 +46,7 @@ int main(int argc, char **argcv, char **envp)
 
     if (argc == 5) // number of arguments shold be set as 5
     {
-        fdin = open_file(argv[1], INFILE);
+        fdin = open_file(argv[1], INFILE); //open_fuile function
         if (fdin < 0)
             error_func();
         dup2(fdin, STDIN_FILENO);
@@ -59,5 +59,5 @@ int main(int argc, char **argcv, char **envp)
     }
     else
         write(2, "Invalid number of arguments", 27);
-    return (1);    
+    return (1);  //check what happens with 0  
 }
