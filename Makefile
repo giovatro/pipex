@@ -23,12 +23,14 @@ CFLAGS = -Wall -Wextra -Werror
 
 NAME = pipex
 
+O = *.o
+
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
 
-$(LIBFT)
+$(LIBFT):
 	$(MAKE) -C ./libft
 
 %.o: %.c
@@ -40,7 +42,7 @@ clean:
 
 fclean: clean
 	$(MAKE) fclean -C ./libft
-	rm -f $(NAME)
+	rm -f $(O)
 
 re: fclean all
 
