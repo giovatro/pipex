@@ -10,6 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
+NAME = pipex
+
 SRCS = pipex.c \
 	   parse.c \
 
@@ -21,28 +23,22 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
 
-NAME = pipex
-
-O = *.o
+RM = rm -f
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
+		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
 
 $(LIBFT):
 	$(MAKE) -C ./libft
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
 clean:
+	$(RM) &(NAME)
+	$(RM) $(OBJS)
 	$(MAKE) clean -C ./libft
-	rm -f $(OBJS)
 
 fclean: clean
-	$(MAKE) fclean -C ./libft
-	rm -f $(O)
 
 re: fclean all
 

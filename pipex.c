@@ -12,53 +12,72 @@
 
 #include "pipex.h"
 
-void	pipex(char *cmd, char **envp)
+
+static void	child(int *fd, char *infile, , char *cmd, char **envp)
+{
+	int		infile_fd;
+
+	infile_fd = open(infile, O_RDONLY);
+	if (infd == -1)
+	{
+		perror("Open infile error");
+		exit(1);
+	}
+	dup2(infile_fd, 0);
+	dup2(fd[1], 1);
+	close(fd[0]);
+	execute_cmd(cmd, envp);
+}
+
+static void	parent(int *fd, char *cmd, char *outfile, char **envp)
+{
+	int	outfile_fd;
+
+	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if (out_fd == -1)
+	{
+		perror("Open outfile error");
+		exit(1);
+	}
+	dup2(outile_fd, 1);
+	dup2(fd[0], 0);
+	close(fd[1]);
+	execute_cmd(cmd, envp);
+}
+
+void	pipex(char *argv[], char **envp)
 {
 	int		fd[2];
 	pid_t	pid;
 
 	pipe(fd);
 	if (pipe(fd) == -1)
-		error_func();
+	{
+		perror("Pipe");
+		exit(-1);
+	}
 	pid = fork();
-	if (pid < 0)
-		error_func();
-	if (pid == 0)
+	if (pid == -1)
 	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
-		execute_cmd(cmd, envp);
-		exit(EXIT_FAILURE);
+		perror("Fork");
+		exit(-1);
 	}
+	else if (pid == 0)
+		child(fd, argv[0], argv[1], envp); //CHANGE 0 and 1 to 1 and 2
 	else
-	{
-		waitpid(pid, NULL, WNOHANG);
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[1]);
-		close(fd[0]);
-	}
+		parent(fd, argv[2], argv[3], envp);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid, NULL, WNOHANG); //WNOHANG was 0
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	int	fdin;
-	int	fdout;
-
-	if (argc == 5)
+	if (argc != 5)
 	{
-		fdin = open_file(argv[1], INFILE);
-		if (fdin < 0)
-			error_func();
-		dup2(fdin, STDIN_FILENO);
-		fdout = open_file(argv[4], OUTFILE);
-		if (fdout < 0)
-			error_func();
-		dup2(fdout, STDOUT_FILENO);
-		pipex(argv[2], envp);
-		execute_cmd(argv[3], envp);
+		perror("Invalid number of arguments");
+		exit(1);
 	}
-	else
-		write(2, "Invalid number of arguments", 27);
-	return (1);
+	pipex(argv + 1, envp);
+	return (0);
 }

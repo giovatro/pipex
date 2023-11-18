@@ -21,14 +21,6 @@
 # include <errno.h>
 # include "libft/libft.h"
 
-# define STDIN 0
-# define STDOUT 1
-
-# define INFILE 0
-# define OUTFILE 1
-
-void	error_func(void);
-int		open_file(char *file, int flag);
 void	execute_cmd(char *cmd, char **envp);
 
 #endif
