@@ -33,6 +33,7 @@ static void	parent(int *fd, char *cmd, char *outfile, char **envp)
 {
 	int	outfile_fd;
 
+	waitpid(pid, NULL, WNOHANG); //WNOHANG was 0
 	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (out_fd == -1)
 	{
@@ -68,7 +69,6 @@ void	pipex(char *argv[], char **envp)
 		parent(fd, argv[2], argv[3], envp);
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(pid, NULL, WNOHANG); //WNOHANG was 0
 }
 
 int	main(int argc, char **argv, char **envp)
