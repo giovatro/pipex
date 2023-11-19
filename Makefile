@@ -15,10 +15,6 @@ NAME = pipex
 SRCS = pipex.c \
 	   parse.c \
 
-LIBFT = libft/libft.a
-
-OBJS = $(SRCS:.C=.O)
-
 CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
@@ -27,16 +23,13 @@ RM = rm -f
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
-
-$(LIBFT):
-	$(MAKE) -C ./libft
+$(NAME): 
+			$(MAKE) all -C libft
+			$(CC) $(CFLAGS) $(SRCS) -L./libft -lft -o $(NAME)
 
 clean:
-	$(RM) &(NAME)
-	$(RM) $(OBJS)
-	$(MAKE) clean -C ./libft
+		$(RM) $(NAME)
+		$(MAKE) fclean -C libft
 
 fclean: clean
 

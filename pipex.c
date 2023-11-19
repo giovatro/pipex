@@ -6,19 +6,18 @@
 /*   By: gtroiano <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 12:50:42 by gtroiano          #+#    #+#             */
-/*   Updated: 2023/11/17 15:57:04 by gtroiano         ###   ########.fr       */
+/*   Updated: 2023/11/19 11:58:55 by gtroiano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-
-static void	child(int *fd, char *infile, , char *cmd, char **envp)
+static void	child(int *fd, char *infile, char *cmd, char **envp)
 {
 	int		infile_fd;
 
 	infile_fd = open(infile, O_RDONLY);
-	if (infd == -1)
+	if (infile_fd == -1)
 	{
 		perror("Open infile error");
 		exit(1);
@@ -33,14 +32,14 @@ static void	parent(int *fd, char *cmd, char *outfile, char **envp)
 {
 	int	outfile_fd;
 
-	waitpid(pid, NULL, WNOHANG); //WNOHANG was 0
+	wait(NULL);
 	outfile_fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	if (out_fd == -1)
+	if (outfile_fd == -1)
 	{
 		perror("Open outfile error");
 		exit(1);
 	}
-	dup2(outile_fd, 1);
+	dup2(outfile_fd, 1);
 	dup2(fd[0], 0);
 	close(fd[1]);
 	execute_cmd(cmd, envp);
@@ -64,7 +63,7 @@ void	pipex(char *argv[], char **envp)
 		exit(-1);
 	}
 	else if (pid == 0)
-		child(fd, argv[0], argv[1], envp); //CHANGE 0 and 1 to 1 and 2
+		child(fd, argv[0], argv[1], envp);
 	else
 		parent(fd, argv[2], argv[3], envp);
 	close(fd[0]);
