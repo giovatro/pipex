@@ -6,7 +6,7 @@
 /*   By: gtroiano <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/14 14:11:56 by gtroiano          #+#    #+#             */
-/*   Updated: 2023/11/16 17:25:43 by gtroiano         ###   ########.fr       */
+/*   Updated: 2023/11/20 17:39:07 by gtroiano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**get_path(char **envp)
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	if (!envp[i])
-		return (NULL);
+		return (ft_split("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:", ':'));
 	tmp = envp[i] + 5;
 	env_paths = ft_split(tmp, ':');
 	i = 0;
@@ -65,5 +65,5 @@ void	execute_cmd(char *cmd, char **envp)
 	write(2, "pipex: ", 7);
 	write(2, "command not found: ", 20);
 	write(2, cmd, ft_strlen(cmd));
-	exit(127);
+	exit(1);
 }
