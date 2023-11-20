@@ -53,19 +53,19 @@ void	pipex(char *argv[], char **envp)
 	pipe(fd);
 	if (pipe(fd) == -1)
 	{
-		perror("Pipe");
+		perror("Pipe error");
 		exit(-1);
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("Fork");
+		perror("Fork error");
 		exit(-1);
 	}
 	else if (pid == 0)
-		child(fd, argv[0], argv[1], envp);
+		child(fd, argv[1], argv[2], envp);
 	else
-		parent(fd, argv[2], argv[3], envp);
+		parent(fd, argv[3], argv[4], envp);
 	close(fd[0]);
 	close(fd[1]);
 }
@@ -74,9 +74,9 @@ int	main(int argc, char **argv, char **envp)
 {
 	if (argc != 5)
 	{
-		perror("Invalid number of arguments");
+		perror("Incorrect number of arguments");
 		exit(1);
 	}
-	pipex(argv + 1, envp);
+	pipex(argv, envp);
 	return (0);
 }
